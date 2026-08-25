@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Print hello
-        run: echo "Hello from my self-hosted runner!"
+        run: echo "Hello from my self-hosted runner!" > hello.txt
 
       - name: Show runner details
         run: |
