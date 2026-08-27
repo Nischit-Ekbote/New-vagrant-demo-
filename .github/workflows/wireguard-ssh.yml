@@ -1,0 +1,78 @@
+naname: WireGuard SSH Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  wireguard-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install WireGuard
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wireguard
+
+      - name: Create WireGuard configuration
+        run: |
+          sudo mkdir -p /etc/wireguardme: WireGuard SSH Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  wireguard-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install WireGuard
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wireguard
+
+      - name: Create WireGuard configuration
+        run: |
+          sudo mkdir -p /etc/wireguard
+
+          sudo tee /etc/wireguard/wg0.conf > /dev/null <<EOF
+          [Interface]
+          PrivateKey = ${{ secrets.VAGRANT_SSH_KEY}}
+          Address = 192.168.6.66/32
+
+          [Peer]
+          PublicKey = u2t3q+QQp6L1B77nqLewXaSVGycTPn7yIf7909qEAUI= 
+          Endpoint = 103.227.96.74:13231 
+
+          AllowedIPs = 192.168.6.0/24, 192.168.56.0/24
+          PersistentKeepalive = 25
+          EOF
+
+          sudo chmod 600 /etc/wireguard/wg0.conf
+
+      - name: Start WireGuard
+        run: |
+          sudo wg-quick up wg0
+          sudo wg show
+
+      - name: Test WireGuard gateway
+        run: |
+          ping -c 4 192.168.6.1
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VAGRANT_SSH_KEY}}}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+      - name: Test SSH connection
+        run: |
+          ssh \
+            -i ~/.ssh/id_ed25519 \
+            -o StrictHostKeyChecking=no \
+            vagrant@192.168.56.10 \
+            "echo hello > ~/hello.txt"
+
+      - name: Stop WireGuard
+        if: always()
+        run: |
+          sudo wg-quick down wg0
