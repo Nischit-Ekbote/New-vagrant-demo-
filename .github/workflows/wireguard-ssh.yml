@@ -26,7 +26,7 @@ jobs:
           PublicKey = u2t3q+QQp6L1B77nqLewXaSVGycTPn7yIf7909qEAUI= 
           Endpoint = 103.227.96.74:13231 
 
-          AllowedIPs = 192.168.6.0/24, 192.168.56.0/24
+          AllowedIPs = 192.168.6.0/24, 192.168.56.0/24, 192.168.88.0/24
           PersistentKeepalive = 25
           EOF
 
