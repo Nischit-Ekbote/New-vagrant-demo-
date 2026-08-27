@@ -1,21 +1,4 @@
-naname: WireGuard SSH Test
-
-on:
-  workflow_dispatch:
-
-jobs:
-  wireguard-ssh:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Install WireGuard
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wireguard
-
-      - name: Create WireGuard configuration
-        run: |
-          sudo mkdir -p /etc/wireguardme: WireGuard SSH Test
+name: WireGuard SSH Test
 
 on:
   workflow_dispatch:
