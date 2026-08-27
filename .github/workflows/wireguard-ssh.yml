@@ -41,9 +41,19 @@ jobs:
         run: |
           ping -c 4 192.168.6.1
 
-      - name: Test access to machine
+      - name: Setup SSH key
         run: |
-          ping -c 4 192.168.88.162
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VAGRANT_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+      - name: SSH into machine
+        run: |
+          ssh \
+            -i ~/.ssh/id_ed25519 \
+            -o StrictHostKeyChecking=no \
+            vagrant@192.168.88.162 \
+            "echo hello > ~/hello.txt"
 
       - name: Stop WireGuard
         if: always()
